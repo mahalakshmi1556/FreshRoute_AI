@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshRoute AI - Smart Cold Chain & Food Rescue Platform</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-pulse-slow { animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 h-full flex flex-col overflow-hidden">
+
+    <!-- Top Header -->
+    <header class="bg-emerald-900 text-white shadow-md flex items-center justify-between px-6 py-3.5 z-20 shrink-0">
+        <div class="flex items-center space-x-3">
+            <div class="bg-emerald-700 p-2 rounded-xl text-emerald-200 flex items-center justify-center shadow-inner">
+                <i class="fa-solid fa-seedling text-xl"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg tracking-wide flex items-center gap-2">
+                    FreshRoute AI 
+                    <span class="text-xs bg-emerald-700/80 text-emerald-200 px-2 py-0.5 rounded-full font-medium border border-emerald-600">ColdChain & FoodRescue</span>
+                </h1>
+                <p class="text-xs text-emerald-300 hidden sm:block">Intelligent Supply Chain Preservation & Redistribution Engine</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <!-- Global Simulation Status Badge -->
+            <div class="hidden md:flex items-center space-x-2 bg-emerald-800/60 px-3 py-1.5 rounded-lg border border-emerald-700 text-xs text-emerald-200">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>AI Sensor Telemetry: <strong class="text-white">Active (14 Nodes)</strong></span>
+            </div>
+
+            <!-- Quick Alert Notification Bell -->
+            <button onclick="switchTab('alerts')" class="relative p-2 text-emerald-200 hover:text-white transition rounded-lg hover:bg-emerald-800/50">
+                <i class="fa-solid fa-bell text-lg"></i>
+                <span id="alertBadge" class="absolute top-1 right-1 bg-rose-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">3</span>
+            </button>
+
+            <!-- User Profile Dropdown Simulator -->
+            <div class="flex items-center space-x-3 border-l border-emerald-700 pl-4">
+                <img src="https://placehold.co/40x40/065f46/ffffff?text=OP" alt="Operator avatar" class="w-9 h-9 rounded-full ring-2 ring-emerald-500 object-cover">
+                <div class="hidden lg:block text-left text-xs">
+                    <p class="font-semibold text-white">Elena Rostova</p>
+                    <p class="text-emerald-300">Logistics Director</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main App Layout -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between shrink-0 border-r border-slate-800 hidden md:flex">
+            <div class="p-4 space-y-1.5 overflow-y-auto custom-scrollbar">
+                <p class="px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Core Modules</p>
+                
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition nav-btn bg-emerald-600 text-white shadow-md shadow-emerald-900/30">
+                    <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                    <span>Dashboard</span>
+                </button>
+
+                <button onclick="switchTab('shipments')" id="nav-shipments" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition nav-btn hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-truck-fast w-5 text-center"></i>
+                    <span>Shipments & Telemetry</span>
+                </button>
+
+                <button onclick="switchTab('monitoring')" id="nav-monitoring" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition nav-btn hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-temperature-half w-5 text-center"></i>
+                    <span>Cold Chain Monitor</span>
+                </button>
+
+                <button onclick="switchTab('freshness')" id="nav-freshness" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition nav-btn hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-shield-halved w-5 text-center"></i>
+                    <span>Freshness Risk AI</span>
+                </button>
+
+                <button onclick="switchTab('routing')" id="nav-routing" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition nav-btn hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-route w-5 text-center"></i>
+                    <span>Smart Dynamic Routing</span>
+                </button>
+
+                <p class="px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider mt-6 mb-2">Sustainability & Rescue</p>
+
+                <button onclick="switchTab('rescue')" id="nav-rescue" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition nav-btn hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-heart-circle-bolt w-5 text-center text-emerald-400"></i>
+                    <span>Food Rescue Matching</span>
+                </button>
+
+                <button onclick="switchTab('inventory')" id="nav-inventory" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition nav-btn hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-boxes-stacked w-5 text-center"></i>
+                    <span>Inventory & Surplus</span>
+                </button>
+
+                <p class="px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider mt-6 mb-2">System</p>
+
+                <button onclick="switchTab('analytics')" id="nav-analytics" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition nav-btn hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-chart-line w-5 text-center"></i>
+                    <span>Impact & Analytics</span>
+                </button>
+
+                <button onclick="switchTab('alerts')" id="nav-alerts" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition nav-btn hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-triangle-exclamation w-5 text-center"></i>
+                    <span>Alerts & Logs</span>
+                </button>
+
+                <button onclick="switchTab('settings')" id="nav-settings" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition nav-btn hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-gear w-5 text-center"></i>
+                    <span>Settings & IoT Hub</span>
+                </button>
+            </div>
+
+            <!-- Footer Sidebar Widget -->
+            <div class="p-4 bg-slate-950 border-t border-slate-800 text-xs">
+                <div class="flex items-center justify-between text-slate-400 mb-1">
+                    <span>System Status</span>
+                    <span class="text-emerald-400 font-medium">Optimal</span>
+                </div>
+                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-emerald-500 h-full w-[94%]"></div>
+                </div>
+                <p class="text-[10px] text-slate-500 mt-2">FreshRoute Core v4.2 • API Connected</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col overflow-y-auto custom-scrollbar bg-slate-50 relative">
+
+            <!-- Mobile Navigation Bar -->
+            <div class="md:hidden bg-slate-900 text-white p-3 flex items-center justify-between overflow-x-auto text-xs shrink-0 space-x-2 border-b border-slate-800">
+                <button onclick="switchTab('dashboard')" class="mobile-nav px-3 py-1.5 bg-emerald-600 rounded-lg whitespace-nowrap">Dashboard</button>
+                <button onclick="switchTab('shipments')" class="mobile-nav px-3 py-1.5 bg-slate-800 rounded-lg whitespace-nowrap">Shipments</button>
+                <button onclick="switchTab('monitoring')" class="mobile-nav px-3 py-1.5 bg-slate-800 rounded-lg whitespace-nowrap">Cold Chain</button>
+                <button onclick="switchTab('freshness')" class="mobile-nav px-3 py-1.5 bg-slate-800 rounded-lg whitespace-nowrap">Freshness AI</button>
+                <button onclick="switchTab('routing')" class="mobile-nav px-3 py-1.5 bg-slate-800 rounded-lg whitespace-nowrap">Routing</button>
+                <button onclick="switchTab('rescue')" class="mobile-nav px-3 py-1.5 bg-slate-800 rounded-lg whitespace-nowrap">Food Rescue</button>
+                <button onclick="switchTab('inventory')" class="mobile-nav px-3 py-1.5 bg-slate-800 rounded-lg whitespace-nowrap">Inventory</button>
+                <button onclick="switchTab('analytics')" class="mobile-nav px-3 py-1.5 bg-slate-800 rounded-lg whitespace-nowrap">Analytics</button>
+                <button onclick="switchTab('alerts')" class="mobile-nav px-3 py-1.5 bg-slate-800 rounded-lg whitespace-nowrap">Alerts</button>
+                <button onclick="switchTab('settings')" class="mobile-nav px-3 py-1.5 bg-slate-800 rounded-lg whitespace-nowrap">Settings</button>
+            </div>
+
+            <!-- ================= TAB: DASHBOARD ================= -->
+            <div id="tab-dashboard" class="tab-content p-6 space-y-6">
+                <!-- Top Welcome Banner -->
+                <div class="bg-gradient-to-r from-emerald-800 to-teal-900 rounded-2xl p-6 text-white shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <div class="inline-block bg-emerald-700/60 text-emerald-200 text-xs px-3 py-1 rounded-full font-medium mb-2 border border-emerald-600">
+                            <i class="fa-solid fa-bolt mr-1 text-amber-300"></i> AI Cold Chain & Rescue Command Center
+                        </div>
+                        <h2 class="text-2xl font-bold tracking-tight">Zero Food Waste & Perfect Temperature Control</h2>
+                        <p class="text-emerald-100 text-sm mt-1 max-w-2xl">Monitor active transit nodes, predict spoilage risks with machine learning, and instantly redirect near-expiry surplus food to local community rescue partners.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="switchTab('rescue')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold px-4 py-2.5 rounded-xl text-sm shadow-lg transition flex items-center gap-2">
+                            <i class="fa-solid fa-hand-holding-heart"></i> Emergency Surplus Rescue
+                        </button>
+                        <button onclick="triggerNewShipmentModal()" class="bg-white hover:bg-emerald-50 text-emerald-900 font-semibold px-4 py-2.5 rounded-xl text-sm shadow-lg transition flex items-center gap-2">
+                            <i class="fa-solid fa-plus-circle"></i> New Shipment
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI Metric Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Active Shipments</p>
+                            <h3 class="text-3xl font-extrabold text-slate-900 mt-1">24</h3>
+                            <p class="text-xs text-emerald-600 font-medium mt-1 flex items-center gap-1">
+                                <i class="fa-solid fa-arrow-trend-up"></i> 100% Within Safe Threshold
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shadow-inner">
+                            <i class="fa-solid fa-truck"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Cold Chain Integrity</p>
+                            <h3 class="text-3xl font-extrabold text-slate-900 mt-1">99.4%</h3>
+                            <p class="text-xs text-emerald-600 font-medium mt-1 flex items-center gap-1">
+                                <i class="fa-solid fa-shield-check"></i> +0.8% vs last week
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl shadow-inner">
+                            <i class="fa-solid fa-temperature-low"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Food Rescued (MT)</p>
+                            <h3 class="text-3xl font-extrabold text-slate-900 mt-1">142.8</h3>
+                            <p class="text-xs text-emerald-600 font-medium mt-1 flex items-center gap-1">
+                                <i class="fa-solid fa-utensils"></i> Equivalent to 340k meals
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shadow-inner">
+                            <i class="fa-solid fa-heart-circle-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Carbon Saved (CO₂e)</p>
+                            <h3 class="text-3xl font-extrabold text-slate-900 mt-1">84.5t</h3>
+                            <p class="text-xs text-emerald-600 font-medium mt-1 flex items-center gap-1">
+                                <i class="fa-solid fa-leaf"></i> Landfill methane avoided
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-xl shadow-inner">
+                            <i class="fa-solid fa-earth-americas"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Map & Risk Feed Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Interactive GPS / Telemetry Map Simulator -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-base">Live Fleet & Temperature Telemetry Map</h3>
+                                <p class="text-xs text-slate-500">Real-time GPS tracking with IoT sensor overlay across distribution corridors</p>
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs">
+                                <span class="flex items-center gap-1 text-emerald-600 font-medium"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Normal</span>
+                                <span class="flex items-center gap-1 text-amber-600 font-medium"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Warning</span>
+                                <span class="flex items-center gap-1 text-rose-600 font-medium"><span class="w-2 h-2 rounded-full bg-rose-500"></span> Critical</span>
+                            </div>
+                        </div>
+
+                        <!-- Map Simulated Canvas/Box -->
+                        <div class="relative flex-1 min-h-[320px] bg-slate-900 rounded-xl overflow-hidden shadow-inner flex items-center justify-center border border-slate-800">
+                            <!-- Background Map grid graphics using SVG -->
+                            <svg class="absolute inset-0 w-full h-full opacity-20" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#334155" stroke-width="1"/>
+                                    </pattern>
+                                </defs>
+                                <rect width="100%" height="100%" fill="url(#grid)" />
+                            </svg>
+
+                            <!-- Route Lines SVG -->
+                            <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M 120 100 Q 250 80 380 220 T 600 150" fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="6 4" class="animate-pulse" />
+                                <path d="M 200 280 Q 320 180 450 120" fill="none" stroke="#f59e0b" stroke-width="3" />
+                                <path d="M 100 220 Q 220 300 350 280" fill="none" stroke="#3b82f6" stroke-width="3" />
+                            </svg>
+
+                            <!-- Interactive Route Pins -->
+                            <div onclick="selectShipmentPin('SHP-9021', 'Organic Avocados', '3.8°C', '98.2% Freshness', 'On Route - Chicago Hub')" class="absolute top-1/4 left-1/3 cursor-pointer group transform -translate-x-1/2 -translate-y-1/2">
+                                <div class="relative flex items-center justify-center">
+                                    <span class="absolute w-8 h-8 rounded-full bg-emerald-500/30 animate-ping"></span>
+                                    <div class="w-7 h-7 bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-lg border-2 border-white text-xs font-bold">
+                                        <i class="fa-solid fa-truck-fast"></i>
+                                    </div>
+                                </div>
+                                <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-[11px] px-2.5 py-1 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none border border-slate-700 z-10">
+                                    SHP-9021 • 3.8°C (Safe)
+                                </div>
+                            </div>
+
+                            <div onclick="selectShipmentPin('SHP-8843', 'Fresh Atlantic Salmon', '5.2°C', '89.4% Freshness (Warning)', 'Delayed - Route Diverted')" class="absolute top-1/2 left-2/3 cursor-pointer group transform -translate-x-1/2 -translate-y-1/2">
+                                <div class="relative flex items-center justify-center">
+                                    <span class="absolute w-8 h-8 rounded-full bg-amber-500/30 animate-ping"></span>
+                                    <div class="w-7 h-7 bg-amber-500 text-slate-950 rounded-full flex items-center justify-center shadow-lg border-2 border-white text-xs font-bold">
+                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                    </div>
+                                </div>
+                                <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-[11px] px-2.5 py-1 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none border border-slate-700 z-10">
+                                    SHP-8843 • 5.2°C (Warning)
+                                </div>
+                            </div>
+
+                            <div onclick="selectShipmentPin('SHP-7721', 'Baby Spinach & Kale', '2.1°C', '99.1% Freshness', 'Optimal Air-Freight')" class="absolute top-1/5 left-3/4 cursor-pointer group transform -translate-x-1/2 -translate-y-1/2">
+                                <div class="relative flex items-center justify-center">
+                                    <span class="absolute w-8 h-8 rounded-full bg-emerald-500/30 animate-ping"></span>
+                                    <div class="w-7 h-7 bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-lg border-2 border-white text-xs font-bold">
+                                        <i class="fa-solid fa-plane"></i>
+                                    </div>
+                                </div>
+                                <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-[11px] px-2.5 py-1 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none border border-slate-700 z-10">
+                                    SHP-7721 • 2.1°C (Optimal)
+                                </div>
+                            </div>
+
+                            <!-- Map Floating Legend Box -->
+                            <div class="absolute bottom-3 left-3 bg-slate-900/90 backdrop-blur border border-slate-700 p-2.5 rounded-xl text-white text-xs space-y-1 shadow-lg">
+                                <p class="font-bold text-emerald-400 mb-1 flex items-center gap-1"><i class="fa-solid fa-circle-info"></i> Telemetry Inspector</p>
+                                <p id="mapInspectorText" class="text-slate-300">Click any map shipment icon to inspect live IoT telemetry & AI risk score.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Spoilage Risk Feed & Rescue Quick Actions -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                                    <i class="fa-solid fa-brain text-emerald-600"></i> AI Spoilage & Risk Alerts
+                                </h3>
+                                <span class="text-xs bg-rose-100 text-rose-700 font-semibold px-2.5 py-1 rounded-full">2 Actionable</span>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs">
+                                    <div class="flex items-center justify-between font-semibold text-rose-900 mb-1">
+                                        <span>SHP-8843: Atlantic Salmon</span>
+                                        <span class="bg-rose-200 text-rose-800 px-2 py-0.5 rounded text-[10px]">Risk: 84%</span>
+                                    </div>
+cargo-description: Fresh Salmon Fillets
+                                    <p class="text-slate-600 mb-2">Refrigeration unit fluctuating (+2.1°C spike). Shelf life reduced by 18 hours.</p>
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="switchTab('rescue')" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1 rounded-lg font-medium transition shadow-sm">
+                                            <i class="fa-solid fa-hand-holding-heart mr-1"></i> Trigger Rescue Redirect
+                                        </button>
+                                        <button onclick="switchTab('routing')" class="bg-white border border-rose-300 text-rose-800 hover:bg-rose-100 px-3 py-1 rounded-lg font-medium transition">
+                                            Reroute
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs">
+                                    <div class="flex items-center justify-between font-semibold text-amber-900 mb-1">
+                                        <span>INV-4120: Hass Avocados (Surplus)</span>
+                                        <span class="bg-amber-200 text-amber-800 px-2 py-0.5 rounded text-[10px]">Expiring &lt; 48h</span>
+                                    </div>
+                                    <p class="text-slate-600 mb-2">1,200 kg remaining in Central DC. High probability of retail rejection due to ripeness.</p>
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="switchTab('rescue')" class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded-lg font-medium transition shadow-sm">
+                                            <i class="fa-solid fa-utensils mr-1"></i> Match Local Food Bank
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Sustainability Metric Footer -->
+                        <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                            <span>AI Model Precision: <strong class="text-emerald-700">98.9%</strong></span>
+                            <button onclick="switchTab('analytics')" class="text-emerald-600 hover:underline font-semibold flex items-center gap-1">
+                                View Full ESG Report <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Shipments Table Preview -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-slate-900 text-base">Active Shipments Overview</h3>
+                        <button onclick="switchTab('shipments')" class="text-sm font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1">
+                            View All Shipments <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 text-slate-600 uppercase tracking-wider font-semibold">
+                                <tr>
+                                    <th class="p-3 rounded-l-lg">Shipment ID & Cargo</th>
+                                    <th class="p-3">Origin & Destination</th>
+                                    <th class="p-3">Temp / Humidity</th>
+                                    <th class="p-3">Freshness Score</th>
+                                    <th class="p-3">Status</th>
+                                    <th class="p-3 rounded-r-lg text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-slate-700 font-medium">
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="p-3">
+                                        <div class="font-bold text-slate-900">SHP-9021</div>
+                                        <div class="text-slate-500 text-[11px]">Organic Avocados (1.5t)</div>
+                                    </td>
+                                    <td class="p-3">
+                                        <div>Monterey, CA → Chicago, IL</div>
+                                        <div class="text-slate-500 text-[11px]">ETA: Today, 18:30</div>
+                                    </td>
+                                    <td class="p-3">
+                                        <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-semibold">3.8°C (65% RH)</span>
+                                    </td>
+                                    <td class="p-3">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-16 bg-slate-200 h-2 rounded-full overflow-hidden">
+                                                <div class="bg-emerald-500 h-full w-[98%]"></div>
+                                            </div>
+                                            <span>98.2%</span>
+                                        </div>
+                                    </td>
+                                    <td class="p-3">
+                                        <span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-semibold text-[11px]">Optimal</span>
+                                    </td>
+                                    <td class="p-3 text-right">
+                                        <button onclick="switchTab('monitoring')" class="text-emerald-600 hover:underline font-semibold">Inspect</button>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="p-3">
+                                        <div class="font-bold text-slate-900">SHP-8843</div>
+                                        <div class="text-slate-500 text-[11px]">Atlantic Salmon Fillets (800kg)</div>
+                                    </td>
+                                    <td class="p-3">
+                                        <div>Seattle, WA → Denver, CO</div>
+                                        <div class="text-slate-500 text-[11px]">ETA: Tomorrow, 08:00</div>
+                                    </td>
+                                    <td class="p-3">
+                                        <span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded font-semibold">5.2°C (82% RH)</span>
+                                    </td>
+                                    <td class="p-3">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-16 bg-slate-200 h-2 rounded-full overflow-hidden">
+                                                <div class="bg-amber-500 h-full w-[74%]"></div>
+                                            </div>
+                                            <span>74.1%</span>
+                                        </div>
+                                    </td>
+                                    <td class="p-3">
+                                        <span class="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full font-semibold text-[11px]">Warning</span>
+                                    </td>
+                                    <td class="p-3 text-right">
+                                        <button onclick="switchTab('rescue')" class="text-amber-600 hover:underline font-semibold">Rescue Match</button>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="p-3">
+                                        <div class="font-bold text-slate-900">SHP-7721</div>
+                                        <div class="text-slate-500 text-[11px]">Baby Spinach & Kale (2.2t)</div>
+                                    </td>
+                                    <td class="p-3">
+                                        <div>Salinas, CA → New York, NY</div>
+                                        <div class="text-slate-500 text-[11px]">ETA: In Transit</div>
+                                    </td>
+                                    <td class="p-3">
+                                        <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-semibold">2.1°C (90% RH)</span>
+                                    </td>
+                                    <td class="p-3">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-16 bg-slate-200 h-2 rounded-full overflow-hidden">
+                                                <div class="bg-emerald-500 h-full w-[99%]"></div>
+                                            </div>
+                                            <span>99.1%</span>
+                                        </div>
+                                    </td>
+                                    <td class="p-3">
+                                        <span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-semibold text-[11px]">Optimal</span>
+                                    </td>
+                                    <td class="p-3 text-right">
+                                        <button onclick="switchTab('monitoring')" class="text-emerald-600 hover:underline font-semibold">Inspect</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB: SHIPMENTS & TELEMETRY ================= -->
+            <div id="tab-shipments" class="tab-content p-6 space-y-6 hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Shipments & Telemetry Management</h2>
+                        <p class="text-sm text-slate-500">Real-time IoT sensor logs across all active cold-chain transit containers</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="triggerNewShipmentModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2.5 rounded-xl text-sm shadow-md transition flex items-center gap-2">
+                            <i class="fa-solid fa-plus-circle"></i> Create Shipment
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filters & Search Bar -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4 justify-between items-center">
+                    <div class="flex items-center gap-2 w-full md:w-auto">
+                        <div class="relative w-full md:w-80">
+                            <i class="fa-solid fa-search absolute left-3.5 top-3 text-slate-400"></i>
+                            <input type="text" id="shipmentSearchInput" placeholder="Search ID, cargo name, route..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto overflow-x-auto">
+                        <button class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap">All (24)</button>
+                        <button class="bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap">Optimal (21)</button>
+                        <button class="bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap">Warning (3)</button>
+                        <button class="bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap">Delivered Today (8)</button>
+                    </div>
+                </div>
+
+                <!-- Detailed Shipments Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <!-- Shipment Card 1 -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-slate-900 text-base">SHP-9021</span>
+                                <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-1 rounded-full">Optimal</span>
+                            </div>
+                            <p class="text-sm font-semibold text-slate-700 mb-1">Organic Hass Avocados (1.5 Metric Tons)</p>
+                            <p class="text-xs text-slate-500 mb-3"><i class="fa-solid fa-location-dot mr-1"></i> Monterey, CA → Chicago, IL</p>
+                            
+                            <div class="bg-slate-50 p-3 rounded-xl space-y-2 text-xs">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Sensor Temp:</span>
+                                    <span class="font-bold text-emerald-700">3.8°C (Range: 2-5°C)</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Humidity:</span>
+                                    <span class="font-semibold text-slate-700">65% RH</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">AI Freshness:</span>
+                                    <span class="font-semibold text-emerald-600">98.2%</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">ETA:</span>
+                                    <span class="font-semibold text-slate-700">Today, 18:30</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
+                            <button onclick="switchTab('monitoring')" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-semibold py-2 rounded-xl text-xs transition">
+                                Telemetry Logs
+                            </button>
+                            <button onclick="switchTab('routing')" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2 rounded-xl text-xs transition">
+                                Route Map
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Shipment Card 2 -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-slate-900 text-base">SHP-8843</span>
+                                <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-1 rounded-full">Warning</span>
+                            </div>
+                            <p class="text-sm font-semibold text-slate-700 mb-1">Atlantic Salmon Fillets (800kg)</p>
+                            <p class="text-xs text-slate-500 mb-3"><i class="fa-solid fa-location-dot mr-1"></i> Seattle, WA → Denver, CO</p>
+                            
+                            <div class="bg-slate-50 p-3 rounded-xl space-y-2 text-xs">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Sensor Temp:</span>
+                                    <span class="font-bold text-amber-700">5.2°C (Range: 0-4°C)</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Humidity:</span>
+                                    <span class="font-semibold text-slate-700">82% RH</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">AI Freshness:</span>
+                                    <span class="font-semibold text-amber-600">74.1% (Risk)</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">ETA:</span>
+                                    <span class="font-semibold text-slate-700">Tomorrow, 08:00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
+                            <button onclick="switchTab('rescue')" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 rounded-xl text-xs transition">
+                                Food Rescue Match
+                            </button>
+                            <button onclick="switchTab('routing')" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2 rounded-xl text-xs transition">
+                                Reroute
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Shipment Card 3 -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-slate-900 text-base">SHP-7721</span>
+                                <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-1 rounded-full">Optimal</span>
+                            </div>
+                            <p class="text-sm font-semibold text-slate-700 mb-1">Baby Spinach & Kale (2.2t)</p>
+                            <p class="text-xs text-slate-500 mb-3"><i class="fa-solid fa-location-dot mr-1"></i> Salinas, CA → New York, NY</p>
+                            
+                            <div class="bg-slate-50 p-3 rounded-xl space-y-2 text-xs">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Sensor Temp:</span>
+                                    <span class="font-bold text-emerald-700">2.1°C (Range: 1-3°C)</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Humidity:</span>
+                                    <span class="font-semibold text-slate-700">90% RH</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">AI Freshness:</span>
+                                    <span class="font-semibold text-emerald-600">99.1%</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">ETA:</span>
+                                    <span class="font-semibold text-slate-700">In Air Transit</span>
+                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
+                            <button onclick="switchTab('monitoring')" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-semibold py-2 rounded-xl text-xs transition">
+                                Telemetry Logs
+                            </button>
+                            <button onclick="switchTab('routing')" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2 rounded-xl text-xs transition">
+                                Route Map
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB: COLD CHAIN MONITOR ================= -->
+            <div id="tab-monitoring" class="tab-content p-6 space-y-6 hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Cold-Chain IoT Monitoring & Analytics</h2>
+                        <p class="text-sm text-slate-500">Granular temperature, humidity, and vibration tracking with breach prediction</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <select id="telemetrySelectShipment" onchange="updateTelemetryChart()" class="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="SHP-9021">SHP-9021 (Organic Avocados)</option>
+                            <option value="SHP-8843">SHP-8843 (Atlantic Salmon)</option>
+                            <option value="SHP-7721">SHP-7721 (Baby Spinach)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Telemetry Chart & Inspector Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Chart Section -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-base">24-Hour Temperature & Humidity Curve</h3>
+                                <p class="text-xs text-slate-500">IoT sensor node ID: #IOT-NODE-9982 (Container Refrigeration Unit)</p>
+                            </div>
+                            <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-1 rounded-full">Safe Threshold: 2°C - 5°C</span>
+                        </div>
+                        
+                        <div class="h-80 w-full relative">
+                            <canvas id="coldChainChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Sensor Diagnostics Panel -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-base mb-3">Sensor Node Diagnostics</h3>
+                            
+                            <div class="space-y-3.5 text-xs">
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                    <div class="flex justify-between font-semibold text-slate-800 mb-1">
+                                        <span>Battery Level</span>
+                                        <span class="text-emerald-600">92% (14 Days left)</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                                        <div class="bg-emerald-500 h-full w-[92%]"></div>
+                                    </div>
+                                </div>
+
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                    <div class="flex justify-between font-semibold text-slate-800 mb-1">
+                                        <span>GPS Signal Quality</span>
+                                        <span class="text-emerald-600">High (12 Sats locked)</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                                        <div class="bg-emerald-500 h-full w-[95%]"></div>
+                                    </div>
+                                </div>
+
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                    <div class="flex justify-between font-semibold text-slate-800 mb-1">
+                                        <span>Vibration & Shock Index</span>
+                                        <span class="text-emerald-600">0.04g (Smooth Transit)</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                                        <div class="bg-emerald-500 h-full w-[98%]"></div>
+                                    </div>
+                                </div>
+
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                    <div class="flex justify-between font-semibold text-slate-800 mb-1">
+                                        <span>Door Open Events</span>
+                                        <span class="text-slate-700">0 recorded</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="simulateIoTSpike()" class="mt-4 w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-xl text-xs transition shadow-md">
+                            <i class="fa-solid fa-bolt text-amber-400 mr-1"></i> Simulate Temperature Spike Test
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB: FRESHNESS RISK AI ================= -->
+            <div id="tab-freshness" class="tab-content p-6 space-y-6 hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Freshness Risk & Shelf-Life AI Prediction</h2>
+                        <p class="text-sm text-slate-500">Machine learning models predicting exact degradation curves based on respiration rates</p>
+                    </div>
+                </div>
+
+                <!-- AI Predictor Simulator Cards -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-900 text-base mb-3">Select Produce / Cargo Category</h3>
+                        <div class="space-y-2">
+                            <button onclick="selectFreshnessModel('avocados')" id="btn-model-avocados" class="w-full text-left p-3 rounded-xl border border-emerald-500 bg-emerald-50/50 flex items-center justify-between text-xs transition">
+                                <span class="font-semibold text-slate-900">Hass Avocados (Climacteric)</span>
+                                <span class="text-emerald-700 font-bold">98.2% Fresh</span>
+                            </button>
+                            <button onclick="selectFreshnessModel('berries')" id="btn-model-berries" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-xs transition">
+                                <span class="font-semibold text-slate-900">Organic Strawberries (High Resp.)</span>
+                                <span class="text-amber-600 font-bold">88.4% Fresh</span>
+                            </button>
+                            <button onclick="selectFreshnessModel('salmon')" id="btn-model-salmon" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-xs transition">
+                                <span class="font-semibold text-slate-900">Atlantic Salmon Fillets (Protein)</span>
+                                <span class="text-rose-600 font-bold">74.1% Risk</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Prediction Result Panel -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 id="freshnessModelTitle" class="font-bold text-slate-900 text-base">Hass Avocados - Degradation Simulation</h3>
+                                <span id="freshnessBadgeStatus" class="bg-emerald-100 text-emerald-800 font-semibold text-xs px-2.5 py-1 rounded-full">Optimal Storage</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100 text-center">
+                                    <p class="text-xs text-slate-500 mb-1">Estimated Remaining Shelf Life</p>
+                                    <h4 id="metricShelfLife" class="text-2xl font-extrabold text-emerald-700">7.5 Days</h4>
+                                </div>
+                                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100 text-center">
+                                    <p class="text-xs text-slate-500 mb-1">Ethylene Gas Emission Rate</p>
+                                    <h4 id="metricEthylene" class="text-2xl font-extrabold text-slate-800">0.4 µL/kg·h</h4>
+                                </div>
+                                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100 text-center">
+                                    <p class="text-xs text-slate-500 mb-1">Recommended Action</p>
+                                    <h4 id="metricAction" class="text-sm font-bold text-slate-900 mt-1">Normal Distribution</h4>
+                                </div>
+                            </div>
+
+                            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                                <strong>AI Recommendation:</strong> Temperature kept strictly at 3.8°C has suppressed respiration spikes. Current batch quality meets Tier-1 premium retail standards. No immediate food rescue intervention required.
+                            </p>
+                        </div>
+
+                        <div class="flex items-center gap-3 pt-4 border-t border-slate-100">
+                            <button onclick="switchTab('rescue')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-2">
+                                <i class="fa-solid fa-hand-holding-heart"></i> Pre-emptive Food Rescue Match
+                            </button>
+                            <button onclick="switchTab('routing')" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-4 py-2.5 rounded-xl text-xs transition">
+                                Optimize Route Speed
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB: SMART DYNAMIC ROUTING ================= -->
+            <div id="tab-routing" class="tab-content p-6 space-y-6 hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Smart Dynamic Routing & Spoilage Avoidance</h2>
+                        <p class="text-sm text-slate-500">AI route optimization avoiding traffic congestion, road bumps, and high ambient temperature zones</p>
+                    </div>
+                    <button onclick="runAiRouteOptimization()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2.5 rounded-xl text-xs shadow-md transition flex items-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Run AI Re-Route Simulation
+                    </button>
+                </div>
+
+                <!-- Interactive Routing Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-900 text-base mb-3">Active Route Corridors</h3>
+                        <div class="space-y-3 text-xs">
+                            <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                                <div class="flex justify-between font-semibold text-emerald-900 mb-1">
+                                    <span>Route #104 (Monterey → Chicago)</span>
+                                    <span class="text-emerald-700">Optimized</span>
+                                </div>
+                                <p class="text-slate-600">Avoided I-80 heatwave corridor (+32°C ambient). Saved estimated 4.2 hours shelf degradation.</p>
+                            </div>
+
+                            <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl">
+                                <div class="flex justify-between font-semibold text-amber-900 mb-1">
+                                    <span>Route #882 (Seattle → Denver)</span>
+                                    <span class="text-amber-700">Rerouting...</span>
+                                </div>
+                                <p class="text-slate-600">Refrigeration unit warning triggered. AI algorithm auto-suggesting nearest redistribution hub.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Large Route Map Simulation -->
+                    <div class="lg:col-span-2 bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-800 flex flex-col justify-between relative overflow-hidden min-h-[350px]">
+                        <div class="absolute inset-0 opacity-15">
+                            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                                <pattern id="grid2" width="50" height="50" patternUnits="userSpaceOnUse">
+                                    <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#ffffff" stroke-width="1"/>
+                                </pattern>
+                                <rect width="100%" height="100%" fill="url(#grid2)" />
+                            </svg>
+                        </div>
+
+                        <div class="z-10 flex items-center justify-between">
+                            <div>
+                                <h3 class="font-bold text-white text-base">Dynamic Routing Visualizer</h3>
+                                <p class="text-xs text-slate-400">Live traffic & weather overlay integration</p>
+                            </div>
+                            <span class="bg-emerald-500/20 border border-emerald-500 text-emerald-300 text-xs px-3 py-1 rounded-full font-medium">AI Auto-Pilot On</span>
+                        </div>
+
+                        <div class="z-10 my-auto text-center py-10">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-600 text-white text-2xl shadow-xl animate-pulse mb-3">
+                                <i class="fa-solid fa-route"></i>
+                            </div>
+                            <h4 id="routeStatusText" class="text-white font-bold text-lg">All corridors dynamically balanced</h4>
+                            <p class="text-slate-400 text-xs mt-1">Average transit temperature variance reduced by 64% using predictive cooling control.</p>
+                        </div>
+
+                        <div class="z-10 bg-slate-950/80 backdrop-blur p-3 rounded-xl border border-slate-800 flex justify-between text-xs text-slate-300">
+                            <span>Fuel Efficiency: <strong class="text-emerald-400">+14.2%</strong></span>
+                            <span>Spoilage Avoided: <strong class="text-emerald-400">12.4 Metric Tons</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB: FOOD RESCUE MATCHING ================= -->
+            <div id="tab-rescue" class="tab-content p-6 space-y-6 hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Automated Food Rescue & Surplus Matching</h2>
+                        <p class="text-sm text-slate-500">Instantly connect near-expiry wholesale food batches with verified local food banks & shelters</p>
+                    </div>
+                    <button onclick="triggerNewRescueModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold px-4 py-2.5 rounded-xl text-xs shadow-md transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> List Surplus for Rescue
+                    </button>
+                </div>
+
+                <!-- Rescue Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <!-- Rescue Match 1 -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-slate-900 text-base">INV-4120</span>
+                                <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-1 rounded-full">Expiring &lt; 48h</span>
+                            </div>
+                            <p class="text-sm font-semibold text-slate-700 mb-1">Hass Avocados (1,200 kg)</p>
+                            <p class="text-xs text-slate-500 mb-3"><i class="fa-solid fa-warehouse mr-1"></i> Central Distribution Center #4</p>
+                            
+                            <div class="bg-slate-50 p-3 rounded-xl space-y-2 text-xs">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Matched Partner:</span>
+                                    <span class="font-bold text-slate-800">Greater Chicago Food Depository</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Distance:</span>
+                                    <span class="font-semibold text-slate-700">4.2 miles away</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Meal Equivalent:</span>
+                                    <span class="font-semibold text-emerald-600">2,850 Meals</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="executeRescueMatch('INV-4120', 'Greater Chicago Food Depository')" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold py-2.5 rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-hand-holding-heart"></i> Dispatch Rescue Pickup Now
+                        </button>
+                    </div>
+
+                    <!-- Rescue Match 2 -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-slate-900 text-base">SHP-8843</span>
+                                <span class="bg-rose-100 text-rose-800 text-xs font-semibold px-2.5 py-1 rounded-full">Temp Spike Risk</span>
+                            </div>
+                            <p class="text-sm font-semibold text-slate-700 mb-1">Atlantic Salmon Fillets (800kg)</p>
+                            <p class="text-xs text-slate-500 mb-3"><i class="fa-solid fa-truck mr-1"></i> En Route (Denver Corridor)</p>
+                            
+                            <div class="bg-slate-50 p-3 rounded-xl space-y-2 text-xs">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Matched Partner:</span>
+                                    <span class="font-bold text-slate-800">Denver Community Kitchen</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Distance:</span>
+                                    <span class="font-semibold text-slate-700">12.5 miles away</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Meal Equivalent:</span>
+                                    <span class="font-semibold text-emerald-600">1,600 Meals</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="executeRescueMatch('SHP-8843', 'Denver Community Kitchen')" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold py-2.5 rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-hand-holding-heart"></i> Divert to Rescue Kitchen
+                        </button>
+                    </div>
+
+                    <!-- Rescue Match 3 -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-slate-900 text-base">INV-3901</span>
+                                <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-1 rounded-full">Completed</span>
+                            </div>
+                            <p class="text-sm font-semibold text-slate-700 mb-1">Mixed Organic Root Vegetables (2.5t)</p>
+                            <p class="text-xs text-slate-500 mb-3"><i class="fa-solid fa-warehouse mr-1"></i> Salinas DC</p>
+                            
+                            <div class="bg-slate-50 p-3 rounded-xl space-y-2 text-xs">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Delivered To:</span>
+                                    <span class="font-bold text-slate-800">Bay Area Harvest Food Bank</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Completed At:</span>
+                                    <span class="font-semibold text-slate-700">Today, 09:15 AM</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Meal Equivalent:</span>
+                                    <span class="font-semibold text-emerald-600">5,100 Meals</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button disabled class="w-full bg-slate-100 text-slate-400 font-semibold py-2.5 rounded-xl text-xs cursor-not-allowed">
+                            <i class="fa-solid fa-check mr-1"></i> Successfully Rescued
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB: INVENTORY & SURPLUS ================= -->
+            <div id="tab-inventory" class="tab-content p-6 space-y-6 hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Inventory & Surplus Forecasting</h2>
+                        <p class="text-sm text-slate-500">Warehouse stock levels with automated surplus flagging before expiration</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 text-slate-600 uppercase tracking-wider font-semibold">
+                                <tr>
+                                    <th class="p-3 rounded-l-lg">Item Name</th>
+                                    <th class="p-3">Category</th>
+                                    <th class="p-3">Stock Quantity</th>
+                                    <th class="p-3">Expiry Date</th>
+                                    <th class="p-3">Surplus Risk</th>
+                                    <th class="p-3 rounded-r-lg text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-slate-700 font-medium">
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="p-3 font-bold text-slate-900">Organic Hass Avocados</td>
+                                    <td class="p-3">Produce</td>
+                                    <td class="p-3">1,200 kg</td>
+                                    <td class="p-3 text-amber-600 font-semibold">In 36 Hours</td>
+                                    <td class="p-3"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[11px] font-semibold">High Surplus</span></td>
+                                    <td class="p-3 text-right"><button onclick="switchTab('rescue')" class="text-amber-600 hover:underline font-semibold">Rescue Match</button></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="p-3 font-bold text-slate-900">Fresh Baby Spinach</td>
+                                    <td class="p-3">Leafy Greens</td>
+                                    <td class="p-3">850 kg</td>
+                                    <td class="p-3 text-emerald-600 font-semibold">In 5 Days</td>
+                                    <td class="p-3"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[11px] font-semibold">Normal</span></td>
+                                    <td class="p-3 text-right"><button onclick="switchTab('monitoring')" class="text-emerald-600 hover:underline font-semibold">Inspect</button></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="p-3 font-bold text-slate-900">Almond Milk (Unsweetened)</td>
+                                    <td class="p-3">Dairy Alternative</td>
+                                    <td class="p-3">3,400 cartons</td>
+                                    <td class="p-3 text-emerald-600 font-semibold">In 45 Days</td>
+                                    <td class="p-3"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[11px] font-semibold">Low</span></td>
+                                    <td class="p-3 text-right"><button onclick="switchTab('monitoring')" class="text-emerald-600 hover:underline font-semibold">Inspect</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB: IMPACT & ANALYTICS ================= -->
+            <div id="tab-analytics" class="tab-content p-6 space-y-6 hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">ESG Impact & Analytics Dashboard</h2>
+                        <p class="text-sm text-slate-500">Comprehensive carbon footprint reduction, food waste diverted, and cold chain performance metrics</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Analytics Chart 1 -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-900 text-base mb-4">Monthly Food Waste Diverted (Metric Tons)</h3>
+                        <div class="h-72 w-full relative">
+                            <canvas id="impactChart1"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Chart 2 -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-900 text-base mb-4">Cold Chain Integrity vs Spoilage Rate (%)</h3>
+                        <div class="h-72 w-full relative">
+                            <canvas id="impactChart2"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB: ALERTS & LOGS ================= -->
+            <div id="tab-alerts" class="tab-content p-6 space-y-6 hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">System Alerts & IoT Event Logs</h2>
+                        <p class="text-sm text-slate-500">Chronological feed of temperature breaches, route deviations, and automated rescue triggers</p>
+                    </div>
+                    <button onclick="clearAlerts()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold px-4 py-2 rounded-xl text-xs transition">
+                        Clear All Logs
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-3">
+                    <div class="p-4 rounded-xl bg-rose-50 border border-rose-200 flex items-start gap-3">
+                        <div class="p-2 bg-rose-100 text-rose-700 rounded-lg shrink-0 mt-0.5"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div class="flex-1 text-xs">
+                            <div class="flex justify-between font-semibold text-rose-900 mb-1">
+                                <span>Temperature Spike Detected - SHP-8843</span>
+                                <span class="text-slate-500">12 mins ago</span>
+                            </div>
+                            <p class="text-slate-600">Refrigeration container temp reached 5.2°C (exceeding maximum 4.0°C threshold for seafood). AI auto-generated food rescue match.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-amber-50 border border-amber-200 flex items-start gap-3">
+                        <div class="p-2 bg-amber-100 text-amber-700 rounded-lg shrink-0 mt-0.5"><i class="fa-solid fa-route"></i></div>
+                        <div class="flex-1 text-xs">
+                            <div class="flex justify-between font-semibold text-amber-900 mb-1">
+                                <span>Dynamic Rerouting Executed - Route #104</span>
+                                <span class="text-slate-500">1 hour ago</span>
+                            </div>
+                            <p class="text-slate-600">AI navigation avoided traffic congestion and ambient heat zone on I-80. ETA adjusted by -25 minutes.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex items-start gap-3">
+                        <div class="p-2 bg-emerald-100 text-emerald-700 rounded-lg shrink-0 mt-0.5"><i class="fa-solid fa-hand-holding-heart"></i></div>
+                        <div class="flex-1 text-xs">
+                            <div class="flex justify-between font-semibold text-emerald-900 mb-1">
+                                <span>Successful Food Rescue Delivery - INV-3901</span>
+                                <span class="text-slate-500">3 hours ago</span>
+                            </div>
+                            <p class="text-slate-600">2.5 metric tons of organic root vegetables successfully delivered to Bay Area Harvest Food Bank (5,100 meals provided).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB: SETTINGS & IOT HUB ================= -->
+            <div id="tab-settings" class="tab-content p-6 space-y-6 hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Platform Settings & IoT Hub Integration</h2>
+                        <p class="text-sm text-slate-500">Configure sensor polling frequency, AI threshold sensitivity, and rescue partner networks</p>
+                    </div>
+                    <button onclick="saveSettings()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-xl text-xs shadow-md transition">
+                        Save Preferences
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-4">
+                        <h3 class="font-bold text-slate-900 text-base">IoT Sensor Telemetry Configuration</h3>
+                        
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Sensor Polling Interval</label>
+                            <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option>Every 1 Minute (High Precision)</option>
+                                <option selected>Every 5 Minutes (Standard)</option>
+                                <option>Every 15 Minutes (Battery Saver)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">AI Spoilage Risk Threshold Sensitivity</label>
+                            <input type="range" min="1" max="100" value="85" class="w-full accent-emerald-600">
+                            <div class="flex justify-between text-[11px] text-slate-500 mt-1">
+                                <span>Conservative (Fewer false alarms)</span>
+                                <span>Aggressive (Early rescue trigger)</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-2">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-900">Auto-Surplus Food Rescue Matching</p>
+                                <p class="text-[11px] text-slate-500">Automatically ping nearby food banks when expiry &lt; 48 hours</p>
+                            </div>
+                            <input type="checkbox" checked class="w-4 h-4 accent-emerald-600 rounded">
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-4">
+                        <h3 class="font-bold text-slate-900 text-base">API & Integration Endpoints</h3>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Live IoT Webhook URL</label>
+                            <input type="text" value="https://api.freshroute.ai/v1/telemetry/stream" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Blockchain Audit Ledger Node</label>
+                            <input type="text" value="node-us-west-coldchain.freshroute.net:8545" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-600">
+                        </div>
+                        <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-800">
+                            <i class="fa-solid fa-circle-check mr-1"></i> All 14 cold chain IoT nodes verified and streaming encrypted telemetry.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Notification Toast / Modal Container -->
+    <div id="toastNotification" class="fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl z-50 transform translate-y-32 opacity-0 transition-all duration-300 flex items-center gap-3 border border-slate-700">
+        <div id="toastIcon" class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-sm">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <div>
+            <h4 id="toastTitle" class="font-bold text-xs">Action Successful</h4>
+            <p id="toastMessage" class="text-[11px] text-slate-300">FreshRoute AI operation completed.</p>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-600', 'text-white', 'shadow-md', 'shadow-emerald-900/30');
+                btn.classList.add('hover:bg-slate-800', 'hover:text-white');
+            });
+            const activeBtn = document.getElementById('nav-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-emerald-600', 'text-white', 'shadow-md', 'shadow-emerald-900/30');
+                activeBtn.classList.remove('hover:bg-slate-800', 'hover:text-white');
+            }
+        }
+
+        // Map Inspector Pin Click
+        function selectShipmentPin(id, cargo, temp, freshness, status) {
+            const inspector = document.getElementById('mapInspectorText');
+            inspector.innerHTML = `<strong>${id} (${cargo})</strong><br>Temp: ${temp} | Freshness: ${freshness}<br>Status: <span class="text-emerald-400 font-semibold">${status}</span>`;
+            showToast('Telemetry Inspector', `Loaded live data for ${id}`);
+        }
+
+        // Toast Notification System
+        function showToast(title, message) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMessage').innerText = message;
+            toast.classList.remove('translate-y-32', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-32', 'opacity-0');
+            }, 3500);
+        }
+
+        // Action Handlers
+        function executeRescueMatch(shipmentId, partnerName) {
+            showToast('Food Rescue Dispatched!', `Matched ${shipmentId} with ${partnerName}. Pickup driver en route.`);
+        }
+
+        function triggerNewShipmentModal() {
+            showToast('New Shipment', 'Shipment creation wizard opened successfully.');
+        }
+
+        function triggerNewRescueModal() {
+            showToast('Surplus Listing', 'Surplus inventory broadcasting wizard opened.');
+        }
+
+        function simulateIoTSpike() {
+            showToast('IoT Simulation', 'Simulated container refrigeration temperature spike (+2.1°C). AI risk alert generated.');
+        }
+
+        function runAiRouteOptimization() {
+            showToast('AI Routing', 'Re-calculated optimal corridors. Avoided heat zones and saved 28 minutes transit time.');
+        }
+
+        function clearAlerts() {
+            showToast('Alerts Cleared', 'All chronological IoT event logs archived.');
+        }
+
+        function saveSettings() {
+            showToast('Settings Saved', 'IoT polling thresholds and webhook endpoints updated.');
+        }
+
+        // Freshness AI Model Selector
+        function selectFreshnessModel(modelKey) {
+            document.getElementById('btn-model-avocados').className = "w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-xs transition";
+            document.getElementById('btn-model-berries').className = "w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-xs transition";
+            document.getElementById('btn-model-salmon').className = "w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-xs transition";
+
+            if(modelKey === 'avocados') {
+                document.getElementById('btn-model-avocados').className = "w-full text-left p-3 rounded-xl border border-emerald-500 bg-emerald-50/50 flex items-center justify-between text-xs transition";
+                document.getElementById('freshnessModelTitle').innerText = "Hass Avocados - Degradation Simulation";
+                document.getElementById('freshnessBadgeStatus').innerText = "Optimal Storage";
+                document.getElementById('metricShelfLife').innerText = "7.5 Days";
+                document.getElementById('metricEthylene').innerText = "0.4 µL/kg·h";
+                document.getElementById('metricAction').innerText = "Normal Distribution";
+            } else if(modelKey === 'berries') {
+                document.getElementById('btn-model-berries').className = "w-full text-left p-3 rounded-xl border border-amber-500 bg-amber-50/50 flex items-center justify-between text-xs transition";
+                document.getElementById('freshnessModelTitle').innerText = "Organic Strawberries - High Respiration Curve";
+                document.getElementById('freshnessBadgeStatus').innerText = "Warning (Expiring)";
+                document.getElementById('metricShelfLife').innerText = "2.1 Days";
+                document.getElementById('metricEthylene').innerText = "2.8 µL/kg·h";
+                document.getElementById('metricAction').innerText = "Fast-Track Retail / Rescue";
+            } else if(modelKey === 'salmon') {
+                document.getElementById('btn-model-salmon').className = "w-full text-left p-3 rounded-xl border border-rose-500 bg-rose-50/50 flex items-center justify-between text-xs transition";
+                document.getElementById('freshnessModelTitle').innerText = "Atlantic Salmon Fillets - Protein Stability";
+                document.getElementById('freshnessBadgeStatus').innerText = "Critical Risk";
+                document.getElementById('metricShelfLife').innerText = "18 Hours";
+                document.getElementById('metricEthylene').innerText = "N/A (Bacterial)",
+                document.getElementById('metricAction').innerText = "Immediate Food Rescue Match";
+            }
+        }
+
+        // Initialize Charts on Window Load
+        window.onload = function() {
+            // Cold Chain Temperature Chart
+            const ctxColdChain = document.getElementById('coldChainChart').getContext('2d');
+            new Chart(ctxColdChain, {
+                type: 'line',
+                data: {
+                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', 'Now'],
+                    datasets: [{
+                        label: 'Temperature (°C)',
+                        data: [3.2, 3.5, 3.4, 3.8, 3.9, 3.7, 3.8],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }, {
+                        label: 'Humidity (% RH)',
+                        data: [62, 64, 63, 65, 66, 64, 65],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'transparent',
+                        borderDash: [4, 4],
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
+                    scales: { y: { beginAtZero: false, min: 0, max: 100 } }
+                }
+            });
+
+            // Impact Chart 1
+            const ctxImpact1 = document.getElementById('impactChart1').getContext('2d');
+            new Chart(ctxImpact1, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Food Rescued (Metric Tons)',
+                        data: [85, 96, 110, 125, 134, 142.8],
+                        backgroundColor: '#f59e0b',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Impact Chart 2
+            const ctxImpact2 = document.getElementById('impactChart2').getContext('2d');
+            new Chart(ctxImpact2, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Cold Chain Integrity (%)',
+                        data: [97.1, 97.8, 98.2, 98.9, 99.1, 99.4],
+                        borderColor: '#059669',
+                        tension: 0.3,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
+                    scales: { y: { min: 95, max: 100 } }
+                }
+            });
+        };
+    </script>
+</body>
+</html>
